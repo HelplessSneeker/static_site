@@ -1,8 +1,8 @@
-
 import unittest
 
-from leafnode import LeafNode
-from parentnode import ParentNode
+from src.leafnode import LeafNode
+from src.parentnode import ParentNode
+
 
 class TestLeafNode(unittest.TestCase):
     def test_eq(self):
@@ -15,7 +15,10 @@ class TestLeafNode(unittest.TestCase):
                 LeafNode(None, "Normal text"),
             ],
         )
-        self.assertEqual("<p><b>Bold text</b>Normal text<i>italic text</i>Normal text</p>", node.to_html())
+        self.assertEqual(
+            "<p><b>Bold text</b>Normal text<i>italic text</i>Normal text</p>",
+            node.to_html(),
+        )
 
     def test_to_html_with_grandchildren(self):
         grandchild_node = LeafNode("b", "grandchild")

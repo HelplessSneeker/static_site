@@ -1,7 +1,8 @@
 import unittest
 
-from textnode import TextNode, TextType
-from functions import text_node_to_html_node
+from src.textnode import TextNode, TextType
+from src.functions import text_node_to_html_node
+
 
 class TestTextNodeToHTMLNode(unittest.TestCase):
     def test_text(self):
@@ -39,5 +40,7 @@ class TestTextNodeToHTMLNode(unittest.TestCase):
         node = TextNode("This is a img node", TextType.IMAGE, "test url")
         html_node = text_node_to_html_node(node)
         self.assertEqual(html_node.tag, "img")
-        self.assertEqual(html_node.props, {"src": "test url", "alt": "This is a img node"})
+        self.assertEqual(
+            html_node.props, {"src": "test url", "alt": "This is a img node"}
+        )
         self.assertEqual(html_node.value, None)

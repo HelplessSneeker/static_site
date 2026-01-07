@@ -1,7 +1,8 @@
 import unittest
 
-from textnode import TextNode, TextType
-from functions import split_nodes_delimiter
+from src.textnode import TextNode, TextType
+from src.functions import split_nodes_delimiter
+
 
 class TestSplitNodesDelimiter(unittest.TestCase):
     def test_code(self):
@@ -15,7 +16,10 @@ class TestSplitNodesDelimiter(unittest.TestCase):
         self.assertEqual(new_nodes, expected_nodes)
 
     def test_bold(self):
-        node = TextNode("This is text with a **bold block** word and another **bold**", TextType.PLAIN)
+        node = TextNode(
+            "This is text with a **bold block** word and another **bold**",
+            TextType.PLAIN,
+        )
         new_nodes = split_nodes_delimiter([node], "**", TextType.BOLD)
         expected_nodes = [
             TextNode("This is text with a ", TextType.PLAIN),
@@ -34,4 +38,3 @@ class TestSplitNodesDelimiter(unittest.TestCase):
             TextNode(" word", TextType.PLAIN),
         ]
         self.assertEqual(new_nodes, expected_nodes)
-
