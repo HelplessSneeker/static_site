@@ -43,4 +43,4 @@ class TestTextNodeToHTMLNode(unittest.TestCase):
         self.assertEqual(
             html_node.props, {"src": "test url", "alt": "This is a img node"}
         )
-        self.assertEqual(html_node.value, None)
+        self.assertEqual(html_node.value, "")

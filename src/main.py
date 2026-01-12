@@ -1,6 +1,8 @@
 import os
 import shutil
 
+from src.generate_page import generate_page
+
 
 def main():
     generate_public_folder()
@@ -12,6 +14,8 @@ def generate_public_folder():
     os.mkdir("public")
 
     copy_files("static/", "public/")
+
+    generate_page("content/index.md", "template.html", "public/index.html")
 
 
 def copy_files(path, dest):

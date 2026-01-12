@@ -1,4 +1,3 @@
-import re
 from src.functions import text_node_to_html_node, text_to_textnodes
 from src.leafnode import LeafNode
 from src.parentnode import ParentNode
@@ -7,62 +6,75 @@ from src.block_functions import BlockType, markdown_to_blocks, block_to_block_ty
 
 def markdown_to_html_node(markdown):
     blocks = markdown_to_blocks(markdown)
-    leafnodes = []
+    children = []
 
     for block in blocks:
         if not block:
             continue
-        type = block_to_block_type(block)
-        leafnodes += block_to_nodes(block, type)
+        block_type = block_to_block_type(block)
+        children.append(block_to_node(block, block_type))
 
-    return ParentNode("div", leafnodes)
+    return ParentNode("div", children)
 
 
-def block_to_nodes(block, type):
+def text_to_children(text: str):
+    text_nodes = text_to_textnodes(text)
     children = []
-    match type:
-        case BlockType.PARAGRAPH:
-            text_nodes = text_to_textnodes(block.replace("\n", " "))
-            for node in text_nodes:
-                children.append(text_node_to_html_node(node))
-            return [ParentNode("p", children)]
-        case BlockType.HEADING:
-            lines = block.split("\n")
-            for line in lines:
-                if line[0] == "#":
-                    heading_count = block[6:].count("#")
-                    children.append(LeafNode(f"h{heading_count}", line))
-                else:
-                    nodes = text_to_textnodes(block)
-                    for node in nodes:
-                        children.append(text_node_to_html_node(node))
-            return children
-        case BlockType.CODE:
-            return [ParentNode("pre", [LeafNode("code", block[3:-3])])]
-        case BlockType.QUOTE:
-            text_nodes = text_to_textnodes(block)
-            for node in text_nodes:
-                children.append(text_node_to_html_node(node))
-            return [ParentNode("blockquote", children)]
-        case BlockType.ORDERED_LIST:
-            lines = block.split("\n")
-            for line in lines:
-                if re.match(line, r".^[[0-9]+\."):
-                    children.append(LeafNode("li", re.sub(r".^[[0-9]+\.", "", line)))
-                else:
-                    nodes = text_to_textnodes(block)
-                    for node in nodes:
-                        children.append(text_node_to_html_node(node))
-            return [ParentNode("ol", children)]
-        case BlockType.UNORDERED_LIST:
-            lines = block.split("\n")
-            for line in lines:
-                if re.match(r"^- ", line):
-                    children.append(LeafNode("li", re.sub(r".^- ", "", line)))
-                else:
-                    nodes = text_to_textnodes(block)
-                    for node in nodes:
-                        children.append(text_node_to_html_node(node))
-            return [ParentNode("ul", children)]
+    for node in text_nodes:
+        children.append(text_node_to_html_node(node))
+    return children
 
-    return []
+
+def block_to_node(block, block_type):
+    match block_type:
+        case BlockType.PARAGRAPH:
+            # join lines of the paragraph with spaces
+            paragraph = " ".join(block.split("\n"))
+            return ParentNode("p", text_to_children(paragraph))
+
+        case BlockType.HEADING:
+            # count leading #'s for level
+            level = 0
+            for ch in block:
+                if ch == "#":
+                    level += 1
+                else:
+                    break
+            # skip "#"*level + following space
+            text = block[level + 1 :]
+            return ParentNode(f"h{level}", text_to_children(text))
+        case BlockType.CODE:
+            lines = block.split("\n")
+            # drop first and last line (the ``` fences)
+            inner_lines = lines[1:-1]
+            inner = "\n".join(inner_lines) + "\n"  # add final newline
+            code_leaf = LeafNode("code", inner)
+            return ParentNode("pre", [code_leaf])
+        case BlockType.QUOTE:
+            # strip "> " from each line, join with spaces
+            lines = []
+            for line in block.split("\n"):
+                # remove leading '>' and space
+                stripped = line.lstrip(">").strip()
+                lines.append(stripped)
+            text = " ".join(lines)
+            return ParentNode("blockquote", text_to_children(text))
+
+        case BlockType.ORDERED_LIST:
+            items = []
+            for line in block.split("\n"):
+                # strip leading "1. ", "2. ", etc
+                _, text = line.split(". ", 1)
+                items.append(ParentNode("li", text_to_children(text)))
+            return ParentNode("ol", items)
+
+        case BlockType.UNORDERED_LIST:
+            items = []
+            for line in block.split("\n"):
+                # strip leading "- "
+                text = line[2:]
+                items.append(ParentNode("li", text_to_children(text)))
+            return ParentNode("ul", items)
+
+    # should never get here if all types covered
+    raise ValueError(f"unsupported block type: {block_type}")
