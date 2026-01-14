@@ -6,11 +6,11 @@ from src.generate_page import generate_pages_recursive
 
 
 def main():
-    base_path = sys.argv[1]
+    base_path = sys.argv[1] if len(sys.argv) > 1 else ""
     generate_public_folder(base_path)
 
 
-def generate_public_folder(base_path="/"):
+def generate_public_folder(base_path=""):
     if os.path.exists("docs"):
         shutil.rmtree("docs/")
     os.mkdir("docs")
