@@ -17,7 +17,7 @@ This static site generator was created in an effort to solidify my Development s
 
 ### Built With
 
-* [![Python][python]][https://www.python.org/]
+* [![Python][(https://forthebadge.com/images/badges/made-with-python.svg)]][https://www.python.org/]
 
 
 <!-- GETTING STARTED -->
