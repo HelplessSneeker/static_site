@@ -1,5 +1,3 @@
-
-
 <h3 align="center">Static Site Generator</h3>
 
   <p align="center">
@@ -38,7 +36,3 @@ To change the generated HTML just put your desired Markdown files inside the con
 Static content like images and Stylesheet need to be provided in the static folder
 
 For changing the Core Structure of the HTML the template.html file can be changed
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
