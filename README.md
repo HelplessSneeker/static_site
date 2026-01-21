@@ -15,11 +15,6 @@
 This static site generator was created in an effort to solidify my Development skills and Technical understanding
 
 
-### Built With
-
-* [![Python][(https://forthebadge.com/images/badges/made-with-python.svg)]][https://www.python.org/]
-
-
 <!-- GETTING STARTED -->
 ## Getting Started
 
@@ -27,8 +22,7 @@ This static site generator was created in an effort to solidify my Development s
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-* python3
+The only thing needed is Python 
 
 ### Usage
 
